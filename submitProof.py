@@ -78,7 +78,7 @@ def convert_leaves(primes_list):
     # TODO YOUR CODE HERE
     leaves = [int(p).to_bytes(32, 'big') for p in primes_list]
 
-    return []
+    return leaves
 
 
 def build_merkle(leaves):
@@ -91,22 +91,18 @@ def build_merkle(leaves):
 
     #TODO YOUR CODE HERE
     tree = []
-
     current = list(leaves)
     tree.append(current)
-    while len(current) >1:
-        next = []
-        n = leng(current)
-        i=0
-        while i <n:
+    while len(current) > 1:
+        next_level = []
+        n = len(current)
+        i = 0
+        while i < n:
             left = current[i]
-            if i+1 <n:
-                right =current[i+1]
-            else:
-                right = left
-            parent = hash_pair(left,right)
+            right = current[i + 1] if i + 1 < n else left
+            parent = hash_pair(left, right)
             next_level.append(parent)
-            i +=2
+            i += 2
         tree.append(next_level)
         current = next_level
 
@@ -170,7 +166,7 @@ def send_signed_msg(proof, random_leaf):
     address, abi = get_contract_info(chain)
     w3 = connect_to(chain)
 
-    contract = w3.eth.contract(address = Web3.to_checksum_address(address))
+    contract = w3.eth.contract(address=Web3.to_checksum_address(address), abi=abi)
 
     # TODO YOUR CODE HERE
     tx = contract.functions.submit(proof, random_leaf).build_transaction({
@@ -178,7 +174,7 @@ def send_signed_msg(proof, random_leaf):
         'nonce': w3.eth.get_transaction_count(acct.address),
         'gas': 200000,
         'gasPrice': w3.eth.gas_price,
-        'chainID': 97
+        'chainId': 97
     })
     signed_tx = w3.eth.account.sign_transaction(tx, private_key = acct.key)
 
