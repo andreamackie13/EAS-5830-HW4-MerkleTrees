@@ -121,7 +121,7 @@ def prove_merkle(merkle_tree, random_indx):
     
     idx = random_indx
     for l in range(len(merkle_tree)-1):
-        nodes = merkle_tree[level]
+        nodes = merkle_tree[l]
         n = len(nodes)
         if idx %2 == 0:
             sib = idx +1 if idx +1 <n else index
